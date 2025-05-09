@@ -27,7 +27,7 @@ const Header: React.FC = () => {
 
   return (
     <nav id="navbar" className="w-full bg-white shadow">
-      <div className="justify-between px-2 mx-auto lg:max-w-7xl md:items-center md:flex md:px-8">
+      <div className="justify-between container px-2 lg:px-4 mx-auto md:items-center md:flex">
         <div>
           <div className="flex items-center justify-between py-3 md:py-5 md:block">
             <Link to={'/'}>

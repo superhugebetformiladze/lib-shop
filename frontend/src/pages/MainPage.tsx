@@ -18,14 +18,15 @@ const MainPage: React.FC = () => {
   const [cartCounts, setCartCounts] = useState<{ [productId: number]: number }>({});
 
   const categories = useCategories();
-
+  const [page, setPage] = useState(1);
   const params: FetchProductParams = useMemo(() => ({
     ordering,
     search,
     category: selectedCategory,
-  }), [ordering, search, selectedCategory]);
+    page,
+  }), [ordering, search, selectedCategory, page]);
 
-  const { products } = useProducts(params);
+  const { products, count } = useProducts(params);
 
   const handleResetFilters = () => {
     setOrdering('');
@@ -42,6 +43,10 @@ const MainPage: React.FC = () => {
     });
     setCartCounts(counts);
   }, [products]);
+
+  useEffect(() => {
+    setPage(1); // сбрасывать при смене фильтров
+  }, [ordering, search, selectedCategory]);
 
   const handleAdd = (product: IProduct) => {
     addToCart(product);
@@ -68,8 +73,8 @@ const MainPage: React.FC = () => {
 
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Продукты</h1>
+    <div className="container mx-auto">
+      <h1 className="text-3xl font-bold mb-6">Каталог</h1>
 
       <div className="mb-4 flex flex-col md:flex-row gap-4">
         <SearchInput value={search} onChange={setSearch} />
@@ -101,6 +106,20 @@ const MainPage: React.FC = () => {
           );
         })}
 
+      </div>
+      <div className="flex justify-center mt-8 gap-2">
+        {Array.from({ length: Math.ceil(count / 2) }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => setPage(i + 1)}
+            className={`px-3 py-1 rounded ${page === i + 1
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 hover:bg-gray-300'
+              }`}
+          >
+            {i + 1}
+          </button>
+        ))}
       </div>
     </div>
   );
