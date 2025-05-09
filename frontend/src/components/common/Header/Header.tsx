@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
+import { useCart } from "@context/CartContext";
 
 const Header: React.FC = () => {
   const [navbar, setNavbar] = useState(false);
+  const { count: cartCount } = useCart();
 
   const closeNavbar = () => {
     setNavbar(false);
@@ -25,11 +27,11 @@ const Header: React.FC = () => {
 
   return (
     <nav id="navbar" className="w-full bg-white shadow">
-      <div className="justify-between px-4 mx-auto lg:max-w-7xl md:items-center md:flex md:px-8">
+      <div className="justify-between px-2 mx-auto lg:max-w-7xl md:items-center md:flex md:px-8">
         <div>
           <div className="flex items-center justify-between py-3 md:py-5 md:block">
             <Link to={'/'}>
-              <h2 className="text-2xl font-bold">LOGO</h2>
+              <h2 className="text-2xl font-bold">Book shop</h2>
             </Link>
             <div className="md:hidden">
               <button
@@ -75,11 +77,15 @@ const Header: React.FC = () => {
               }`}
           >
             <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0">
-              <li className="text-gray-600 hover:text-blue-600">
-                <Link to={'/'} onClick={closeNavbar}>Home</Link>
-              </li>
-              <li className="text-gray-600 hover:text-blue-600">
-                <Link to={'/'} onClick={closeNavbar}>Blog</Link>
+              <li className="relative text-gray-600 hover:text-blue-600">
+                <Link to={'/cart'} onClick={closeNavbar} className="relative inline-block">
+                  Корзина
+                  {cartCount > 0 && (
+                    <span className="absolute -top-2 -right-4 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5">
+                      {cartCount > 99 ? '99+' : cartCount}
+                    </span>
+                  )}
+                </Link>
               </li>
               <li className="text-gray-600 hover:text-blue-600">
                 <Link to={'/'} onClick={closeNavbar}>About US</Link>

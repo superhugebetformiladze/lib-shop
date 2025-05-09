@@ -26,6 +26,12 @@
       "@pages/*": [
         "./pages/*"
       ],
+      "@utils/*": [
+        "./utils/*"
+      ],
+      "@context/*": [
+        "./context/*"
+      ],
     }
   }
 }

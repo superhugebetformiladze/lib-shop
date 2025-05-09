@@ -32,12 +32,21 @@ module.exports = {
       '@hooks': path.resolve(__dirname, './src/hooks'),
       '@models': path.resolve(__dirname, './src/models'),
       '@pages': path.resolve(__dirname, './src/pages'),
+      '@utils': path.resolve(__dirname, './src/utils'),
+      '@context': path.resolve(__dirname, './src/context'),
     },
     extensions: ['.tsx', '.ts', '.js', '.jsx'],
   },
   plugins: [
     new webpack.DefinePlugin({
-      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      'process.env': JSON.stringify({
+        NODE_ENV: process.env.NODE_ENV,
+        ...Object.fromEntries(
+          Object.entries(process.env).filter(([key]) =>
+            key.startsWith('REACT_APP_')
+          )
+        ),
+      }),
     }),
   ],
 };
