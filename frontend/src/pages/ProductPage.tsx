@@ -37,7 +37,7 @@ const ProductPage: React.FC = () => {
     };
 
     return (
-        <div className="container mx-auto mt-8">
+        <div className="w-full">
 
             {product && (
                 <>

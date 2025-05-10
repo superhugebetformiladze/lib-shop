@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { getCart, saveCart } from '@utils/cart';
 import { IProduct } from '@models/ProductModel';
 import { useCart } from "@context/CartContext";
+import { createOrder } from '@api/Orders/createOrder';
+import { getUserToken, saveUserToken } from '@utils/UserToken';
+import { OrderModel } from '@models/OrderModel';
 
 interface CartItem extends IProduct {
     count: number;
@@ -11,12 +14,16 @@ const CartPage: React.FC = () => {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const { refresh: refreshCart } = useCart();
 
+    const [name, setName] = useState('');
     const [country, setCountry] = useState('');
     const [city, setCity] = useState('');
+    const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
     useEffect(() => {
         const items = getCart();
         setCartItems(items);
+
+        handleGeolocation();
     }, []);
 
     const handleCountChange = (productId: number, delta: number) => {
@@ -83,21 +90,55 @@ const CartPage: React.FC = () => {
     };
 
 
-
-    const handleOrderSubmit = (e: React.FormEvent) => {
+    const handleOrderSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Оформление заказа', {
-            items: cartItems,
+
+        const newErrors = {
+            name: name.trim() === '',
+            country: country.trim() === '',
+            city: city.trim() === '',
+        };
+        setErrors(newErrors);
+
+        if (Object.values(newErrors).some(Boolean)) {
+            alert('Пожалуйста, заполните все поля');
+            return;
+        }
+
+        const localToken = getUserToken();
+
+        const payload: OrderModel = {
+            user_token: localToken,
             country,
-            city
-        });
-        alert('Заказ отправлен!');
-        localStorage.removeItem('cart');
-        setCartItems([]);
-        refreshCart();
-        setCountry('');
-        setCity('');
+            city,
+            name,
+            items: cartItems.map(item => ({
+                product: item.id,
+                quantity: item.count,
+            })),
+        };
+
+        try {
+            const response = await createOrder(payload);
+            const returnedToken = response.user_token;
+
+            if (returnedToken && returnedToken !== localToken) {
+                saveUserToken(returnedToken);
+            }
+
+            alert('Заказ успешно отправлен!');
+            localStorage.removeItem('cart');
+            setCartItems([]);
+            refreshCart();
+            setName('');
+            setCountry('');
+            setCity('');
+        } catch (error) {
+            console.error('Ошибка отправки заказа:', error);
+            alert('Ошибка при отправке заказа');
+        }
     };
+    
 
     return (
         <div className="container mx-auto p-4">
@@ -125,20 +166,42 @@ const CartPage: React.FC = () => {
                         ))}
                     </ul>
 
-                    <form onSubmit={handleOrderSubmit} className="border p-4 rounded shadow space-y-4">
+                    <form onSubmit={handleOrderSubmit} className="border p-6 rounded-xl shadow space-y-4 bg-white">
                         <h2 className="text-xl font-semibold">Оформление заказа</h2>
 
-                        <div className="flex gap-2">
-                            <input value={country} onChange={(e) => setCountry(e.target.value)} placeholder="Страна" />
-                            <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Город" />
-                            <button type="button" onClick={handleGeolocation} className="bg-blue-500 text-white px-4 rounded">
-                                Определить
-                            </button>
+                        <div className="flex flex-col">
+                            <label className="font-medium mb-1">Имя</label>
+                            <input
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="Ваше имя"
+                                className={`border px-4 py-2 rounded ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
+                            />
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label className="font-medium mb-1">Страна</label>
+                            <input
+                                value={country}
+                                onChange={(e) => setCountry(e.target.value)}
+                                placeholder="Страна"
+                                className={`border px-4 py-2 rounded ${errors.country ? 'border-red-500' : 'border-gray-300'}`}
+                            />
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label className="font-medium mb-1">Город</label>
+                            <input
+                                value={city}
+                                onChange={(e) => setCity(e.target.value)}
+                                placeholder="Город"
+                                className={`border px-4 py-2 rounded ${errors.city ? 'border-red-500' : 'border-gray-300'}`}
+                            />
                         </div>
 
                         <button
                             type="submit"
-                            className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded"
+                            className="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2 rounded"
                         >
                             Отправить заказ
                         </button>

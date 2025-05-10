@@ -108,12 +108,12 @@ const MainPage: React.FC = () => {
 
       </div>
       <div className="flex justify-center mt-8 gap-2">
-        {Array.from({ length: Math.ceil(count / 2) }, (_, i) => (
+        {Array.from({ length: Math.ceil(count / 8) }, (_, i) => (
           <button
             key={i}
             onClick={() => setPage(i + 1)}
             className={`px-3 py-1 rounded ${page === i + 1
-                ? 'bg-blue-600 text-white'
+                ? 'bg-green-500 text-white'
                 : 'bg-gray-200 hover:bg-gray-300'
               }`}
           >

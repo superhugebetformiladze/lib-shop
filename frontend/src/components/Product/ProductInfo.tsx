@@ -12,12 +12,12 @@ interface ProductInfoProps {
 
 const ProductInfo: React.FC<ProductInfoProps> = ({ product, count, onAdd, onChangeCount }) => {
   return (
-    <div className="product-info container flex flex-col lg:flex-row gap-16 mx-auto py-8 lg:px-28">
-      <div className="flex items-center justify-center lg:items-start lg:justify-start flex-shrink-0">
+    <div className="flex flex-col lg:flex-row gap-4 lg:gap-16 w-full">
+      <div className="flex items-center justify-center lg:items-start lg:justify-start">
         <img
           src={product.image}
           alt={product.name}
-          className="h-[20rem] lg:h-[60vh] object-contain"
+          className="object-contain"
         />
       </div>
       <div className="flex flex-col items-start justify-start w-full">

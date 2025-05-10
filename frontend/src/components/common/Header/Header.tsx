@@ -88,10 +88,7 @@ const Header: React.FC = () => {
                 </Link>
               </li>
               <li className="text-gray-600 hover:text-blue-600">
-                <Link to={'/'} onClick={closeNavbar}>About US</Link>
-              </li>
-              <li className="text-gray-600 hover:text-blue-600">
-                <Link to={'/'} onClick={closeNavbar}>Contact US</Link>
+                <Link to={'/orders'} onClick={closeNavbar}>Заказы</Link>
               </li>
             </ul>
           </div>

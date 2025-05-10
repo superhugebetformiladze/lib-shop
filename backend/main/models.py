@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True, verbose_name="Название категории")
@@ -26,3 +27,19 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Order(models.Model):
+    user_token = models.UUIDField(verbose_name="Токен покупателя", null=True, editable=False, db_index=True)
+    country = models.CharField(verbose_name="Страна", max_length=255)
+    city = models.CharField(verbose_name="Город", max_length=255)
+    name = models.CharField(verbose_name="Покупатель", max_length=255)
+    created_at = models.DateTimeField(verbose_name="Дата", auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Заказ"
+        verbose_name_plural = "Заказы"
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
