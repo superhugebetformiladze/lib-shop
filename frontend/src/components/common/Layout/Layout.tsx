@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -31,11 +32,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <Header ref={headerRef} />
-      <div style={{ paddingTop: offset + 16 }} className="container mx-auto p-2 lg:p-4">
+      <div style={{ paddingTop: offset + 16 }} className="flex-1 container mx-auto p-2 lg:p-4">
         {children}
       </div>
+      <Footer />
     </div>
   );
 }

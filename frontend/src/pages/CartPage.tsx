@@ -6,6 +6,7 @@ import { useCart } from "@context/CartContext";
 import { createOrder } from '@api/Orders/createOrder';
 import { getUserToken, saveUserToken } from '@utils/UserToken';
 import { OrderModel } from '@models/OrderModel';
+import InputMask from 'react-input-mask';
 
 interface CartItem extends IProduct {
     count: number;
@@ -16,6 +17,7 @@ const CartPage: React.FC = () => {
     const { refresh: refreshCart } = useCart();
 
     const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
     const [country, setCountry] = useState('');
     const [city, setCity] = useState('');
     const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
@@ -98,6 +100,7 @@ const CartPage: React.FC = () => {
             name: name.trim() === '',
             country: country.trim() === '',
             city: city.trim() === '',
+            phone: phone.replace(/[^0-9]/g, '').length !== 11,
         };
         setErrors(newErrors);
 
@@ -107,12 +110,14 @@ const CartPage: React.FC = () => {
         }
 
         const localToken = getUserToken();
+        const cleanedPhone = phone.replace(/\D/g, '');
 
         const payload: OrderModel = {
             user_token: localToken,
             country,
             city,
             name,
+            phone: cleanedPhone,
             items: cartItems.map(item => ({
                 product: item.id,
                 quantity: item.count,
@@ -185,6 +190,27 @@ const CartPage: React.FC = () => {
                                 className={`border px-4 py-2 rounded-xl ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
                             />
                         </div>
+
+                        <div className="flex flex-col">
+                            <label className="font-medium mb-1">Телефон</label>
+                            <InputMask
+                                mask="+7 (999) 999-99-99"
+                                value={phone}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
+                            >
+                                {(inputProps: any) => (
+                                    <input
+                                        {...inputProps}
+                                        placeholder="+7 (___) ___-__-__"
+                                        className={`border px-4 py-2 rounded-xl ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}
+                                    />
+                                )}
+                            </InputMask>
+                            {errors.phone && (
+                                <span className="text-red-500 text-sm mt-1">Введите корректный номер</span>
+                            )}
+                        </div>
+
 
                         <div className="flex flex-col">
                             <label className="font-medium mb-1">Страна</label>

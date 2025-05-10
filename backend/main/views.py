@@ -56,7 +56,12 @@ class OrderViewSet(viewsets.ModelViewSet):
         user_token = self.request.query_params.get('user_token')
         if user_token:
             try:
-                return Order.objects.filter(user_token=user_token).prefetch_related('items__product')
+                return (
+                    Order.objects
+                    .filter(user_token=user_token)
+                    .prefetch_related('items__product')
+                    .order_by('-created_at')
+                )
             except ValueError:
                 return Order.objects.none()
         return Order.objects.none()

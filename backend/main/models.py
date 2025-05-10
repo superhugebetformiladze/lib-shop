@@ -34,6 +34,7 @@ class Order(models.Model):
     city = models.CharField(verbose_name="Город", max_length=255)
     name = models.CharField(verbose_name="Покупатель", max_length=255)
     created_at = models.DateTimeField(verbose_name="Дата", auto_now_add=True)
+    phone = models.CharField(max_length=15, verbose_name="Телефон")
 
     class Meta:
         verbose_name = "Заказ"

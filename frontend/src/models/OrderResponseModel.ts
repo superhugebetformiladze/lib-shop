@@ -5,6 +5,8 @@ export interface OrderResponseModel {
     country: string;
     city: string;
     name: string;
+    phone: string;
+    created_at: string;
     items: {
         product: IProduct;
         quantity: number;
