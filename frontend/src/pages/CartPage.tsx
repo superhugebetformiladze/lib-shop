@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { getCart, saveCart } from '@utils/cart';
 import { IProduct } from '@models/ProductModel';
 import { useCart } from "@context/CartContext";
@@ -138,7 +139,7 @@ const CartPage: React.FC = () => {
             alert('Ошибка при отправке заказа');
         }
     };
-    
+
 
     return (
         <div className="container mx-auto p-4">
@@ -150,18 +151,24 @@ const CartPage: React.FC = () => {
                 <>
                     <ul className="mb-6 space-y-4">
                         {cartItems.map(item => (
-                            <li key={item.id} className="border p-4 rounded shadow flex justify-between items-center">
+                            <li key={item.id} className="border p-4 rounded-xl shadow flex justify-between items-center">
                                 <div>
-                                    <h2 className="font-bold">{item.name}</h2>
+                                    <Link to={`/product/${item.id}`}>
+                                        <h2 className="font-bold hover:text-green-600">{item.name}</h2>
+                                    </Link>
                                     <p>Цена: {item.price} ₽</p>
-                                    <div className="flex gap-2 mt-2 items-center">
-                                        <button onClick={() => handleCountChange(item.id, -1)} className="px-3 py-1 bg-gray-200 rounded">-</button>
-                                        <span>{item.count}</span>
-                                        <button onClick={() => handleCountChange(item.id, 1)} className="px-3 py-1 bg-gray-200 rounded">+</button>
-                                        <button onClick={() => handleRemove(item.id)} className="ml-4 px-3 py-1 bg-red-500 text-white rounded">Удалить</button>
+                                    <div className="flex gap-2 mt-2 items-center flex-col sm:flex-row w-fit">
+                                        <div className='flex gap-2 items-center'>
+                                            <button onClick={() => handleCountChange(item.id, -1)} className="px-3 py-1 bg-gray-200 rounded-xl">-</button>
+                                            <span>{item.count}</span>
+                                            <button onClick={() => handleCountChange(item.id, 1)} className="px-3 py-1 bg-gray-200 rounded-xl">+</button>
+                                        </div>
+                                        <button onClick={() => handleRemove(item.id)} className="px-3 py-1 bg-red-500 text-white rounded-xl w-full">Удалить</button>
                                     </div>
                                 </div>
-                                <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded" />
+                                <Link to={`/product/${item.id}`}>
+                                    <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-xl hover:opacity-80 transition" />
+                                </Link>
                             </li>
                         ))}
                     </ul>
@@ -175,7 +182,7 @@ const CartPage: React.FC = () => {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder="Ваше имя"
-                                className={`border px-4 py-2 rounded ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
+                                className={`border px-4 py-2 rounded-xl ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
                             />
                         </div>
 
@@ -185,7 +192,7 @@ const CartPage: React.FC = () => {
                                 value={country}
                                 onChange={(e) => setCountry(e.target.value)}
                                 placeholder="Страна"
-                                className={`border px-4 py-2 rounded ${errors.country ? 'border-red-500' : 'border-gray-300'}`}
+                                className={`border px-4 py-2 rounded-xl ${errors.country ? 'border-red-500' : 'border-gray-300'}`}
                             />
                         </div>
 
@@ -195,13 +202,13 @@ const CartPage: React.FC = () => {
                                 value={city}
                                 onChange={(e) => setCity(e.target.value)}
                                 placeholder="Город"
-                                className={`border px-4 py-2 rounded ${errors.city ? 'border-red-500' : 'border-gray-300'}`}
+                                className={`border px-4 py-2 rounded-xl ${errors.city ? 'border-red-500' : 'border-gray-300'}`}
                             />
                         </div>
 
                         <button
                             type="submit"
-                            className="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2 rounded"
+                            className="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2 rounded-xl"
                         >
                             Отправить заказ
                         </button>

@@ -11,7 +11,7 @@ const SearchInput: React.FC<Props> = ({ value, onChange }) => (
         placeholder="Поиск..."
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="border p-2 w-full"
+        className="border p-2 w-full rounded-xl"
     />
 );
 

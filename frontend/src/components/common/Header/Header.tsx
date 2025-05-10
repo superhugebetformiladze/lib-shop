@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { useCart } from "@context/CartContext";
 
-const Header: React.FC = () => {
+const Header = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>((props, ref) => {
   const [navbar, setNavbar] = useState(false);
   const { count: cartCount } = useCart();
 
@@ -26,16 +26,16 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <nav id="navbar" className="w-full bg-white shadow">
+    <nav id="navbar" ref={ref} {...props} className="fixed top-0 left-0 w-full bg-white shadow z-50">
       <div className="justify-between container px-2 lg:px-4 mx-auto md:items-center md:flex">
         <div>
           <div className="flex items-center justify-between py-3 md:py-5 md:block">
             <Link to={'/'}>
-              <h2 className="text-2xl font-bold">Book shop</h2>
+              <h2 className="text-2xl font-bold hover:text-green-600 transition duration-300">Book shop</h2>
             </Link>
             <div className="md:hidden">
               <button
-                className="p-2 text-gray-700 rounded-md outline-none focus:border-gray-400 focus:border"
+                className="p-2 text-gray-700 rounded-xl outline-none focus:border-gray-400 focus:border"
                 onClick={() => setNavbar(!navbar)}
               >
                 {navbar ? (
@@ -77,17 +77,20 @@ const Header: React.FC = () => {
               }`}
           >
             <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0">
-              <li className="relative text-gray-600 hover:text-blue-600">
+              <li className="text-gray-600 hover:text-green-600 transition duration-300">
+                <Link to={'/catalog'} onClick={closeNavbar}>Каталог</Link>
+              </li>
+              <li className="relative text-gray-600 hover:text-green-600 transition duration-300">
                 <Link to={'/cart'} onClick={closeNavbar} className="relative inline-block">
                   Корзина
                   {cartCount > 0 && (
-                    <span className="absolute -top-2 -right-4 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5">
+                    <span className="absolute -top-2 -right-4 bg-red-500 text-white text-xs font-bold rounded-xl px-2 py-0.5">
                       {cartCount > 99 ? '99+' : cartCount}
                     </span>
                   )}
                 </Link>
               </li>
-              <li className="text-gray-600 hover:text-blue-600">
+              <li className="text-gray-600 hover:text-green-600 transition duration-300">
                 <Link to={'/orders'} onClick={closeNavbar}>Заказы</Link>
               </li>
             </ul>
@@ -96,6 +99,6 @@ const Header: React.FC = () => {
       </div>
     </nav>
   );
-};
+});
 
 export default Header;

@@ -11,7 +11,7 @@ const CategorySelect: React.FC<Props> = ({ value, onChange, categories }) => (
     <select
         value={value || ''}
         onChange={(e) => onChange(Number(e.target.value) || undefined)}
-        className="border p-2"
+        className="border p-2 rounded-xl cursor-pointer"
     >
         <option value="">Все категории</option>
         {categories.map((cat) => (

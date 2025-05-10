@@ -6,7 +6,7 @@ interface Props {
 }
 
 const OrderingSelect: React.FC<Props> = ({ value, onChange }) => (
-  <select value={value} onChange={(e) => onChange(e.target.value)} className="border p-2">
+  <select value={value} onChange={(e) => onChange(e.target.value)} className="border p-2 rounded-xl cursor-pointer">
     <option value="">Без сортировки</option>
     <option value="price">Цена ↑</option>
     <option value="-price">Цена ↓</option>
