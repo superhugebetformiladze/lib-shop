@@ -1,7 +1,12 @@
-# serializers.py
 import uuid
 from rest_framework import serializers
 from .models import Order, OrderItem, Product, Category
+from django.conf import settings
+from telegram import Bot
+import asyncio
+
+# Инициализация бота
+bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,11 +51,30 @@ class OrderSerializer(serializers.ModelSerializer):
             user_token = uuid.uuid4()
             validated_data['user_token'] = user_token
 
+        # Создание заказа
         order = Order.objects.create(**validated_data)
         for item in items_data:
             OrderItem.objects.create(order=order, **item)
 
         self.context['new_user_token'] = str(user_token)
+
+        # Формируем сообщение для Telegram
+        message_text = (
+            f"Новый заказ!\n\n"
+            f"Имя: {order.name}\n"
+            f"Телефон: {order.phone}\n"
+            f"Страна: {order.country}\n"
+            f"Город: {order.city}\n"
+            f"Товары: {', '.join([item.product.name for item in order.items.all()])}"
+        )
+
+        # Отправка сообщения в Telegram
+        chat_id = settings.TELEGRAM_CHAT_ID  # Телеграм ID чата, куда нужно отправить сообщение
+
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(bot.send_message(chat_id, message_text))
+
         return order
 
     def to_representation(self, instance):
