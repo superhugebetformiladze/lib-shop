@@ -65,7 +65,7 @@ class OrderSerializer(serializers.ModelSerializer):
             f"Телефон: {order.phone}\n"
             f"Страна: {order.country}\n"
             f"Город: {order.city}\n"
-            f"Товары: {', '.join([item.product.name for item in order.items.all()])}"
+            f"Товары:\n" + "\n".join([f"- {item.product.name} — {item.quantity} шт." for item in order.items.all()])
         )
 
         # Отправка сообщения в Telegram
